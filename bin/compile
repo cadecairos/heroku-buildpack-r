@@ -227,10 +227,10 @@ if [[ -f "$BUILD_DIR/Aptfile" ]]; then
   done < "$BUILD_DIR/Aptfile"
 
   fakechroot fakeroot chroot $CHROOT_DIR \
-    apt-get update > /dev/null
+    add-apt-repository main > /dev/null
 
   fakechroot fakeroot chroot $CHROOT_DIR \
-    apt search libxml2 > /dev/null
+    apt-get update > /dev/null
 
   fakechroot fakeroot chroot $CHROOT_DIR \
     apt-get install -y $PACKAGES 2>&1 | indent
