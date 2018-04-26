@@ -221,22 +221,20 @@ if [[ -f "$BUILD_DIR/Aptfile" ]]; then
 
   # TODO: add support for deb files
 
+  APT_OPTIONS="-o dir::etc::sourcelist=$BUILD_DIR/sources.list"
   PACKAGES=""
   while IFS='' read -r PACKAGE || [[ -n "$PACKAGE" ]]; do
     PACKAGES="$PACKAGES $PACKAGE"
   done < "$BUILD_DIR/Aptfile"
 
   fakechroot fakeroot chroot $CHROOT_DIR \
-    echo "deb http://us.archive.ubuntu.com/ubuntu/ xenial-updates main restricted" > /etc/apt/sources.list
+    apt-get $APT_OPTIONS update > /dev/null
 
   fakechroot fakeroot chroot $CHROOT_DIR \
-    apt-get update > /dev/null
+    apt-get $APT_OPTIONS install -y $PACKAGES 2>&1 | indent
 
   fakechroot fakeroot chroot $CHROOT_DIR \
-    apt-get install -y $PACKAGES 2>&1 | indent
-
-  fakechroot fakeroot chroot $CHROOT_DIR \
-    apt-get clean > /dev/null
+    apt-get $APT_OPTIONS clean > /dev/null
 
   # remove unneeded files
   fakechroot fakeroot chroot $CHROOT_DIR \
