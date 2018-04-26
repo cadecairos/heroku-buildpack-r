@@ -275,7 +275,7 @@ if [[ ! -z "$INIT_FILE" ]]; then
   # execute the init wrapper
   # working directory must be /app so that provided packages/scripts can be found
   fakechroot fakeroot chroot $CHROOT_DIR \
-    PKG_CONFIG_PATH="$APP_DIR/.root/usr/lib/x86_64-linux-gnu/pkgconfig" /usr/bin/R --no-save --quiet --slave --file=/app/wrapper.R 2>&1 | indent
+    /bin/bash -c 'PKG_CONFIG_PATH=$APP_DIR/.root/usr/lib/x86_64-linux-gnu/pkgconfig /usr/bin/R --no-save --quiet --slave --file=/app/wrapper.R 2>&1 | indent'
 
   # determine whether the R script failed
   if [[ -f "$CHROOT_DIR/app/status" ]]; then
