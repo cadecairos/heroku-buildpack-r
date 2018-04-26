@@ -270,10 +270,7 @@ if [[ ! -z "$INIT_FILE" ]]; then
   ruby "$BUILDPACK_DIR/bin/util.rb" "$WRAPPER" "$INIT_FILE" "$BUILD_DIR" "$CRAN_MIRROR"
 
   fakechroot fakeroot chroot $CHROOT_DIR \
-    ls -la /
-
-  fakechroot fakeroot chroot $CHROOT_DIR \
-    ls -la /usr/lib/x86_64-linux-gnu/pkgconfig
+    dpkg -L libxml2-dev
 
   # execute the init wrapper
   # working directory must be /app so that provided packages/scripts can be found
