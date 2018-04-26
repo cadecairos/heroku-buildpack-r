@@ -227,9 +227,6 @@ if [[ -f "$BUILD_DIR/Aptfile" ]]; then
   done < "$BUILD_DIR/Aptfile"
 
   fakechroot fakeroot chroot $CHROOT_DIR \
-    add-apt-repository main > /dev/null
-
-  fakechroot fakeroot chroot $CHROOT_DIR \
     apt-get update > /dev/null
 
   fakechroot fakeroot chroot $CHROOT_DIR \
