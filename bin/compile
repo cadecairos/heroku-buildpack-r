@@ -230,6 +230,9 @@ if [[ -f "$BUILD_DIR/Aptfile" ]]; then
     apt-get update > /dev/null
 
   fakechroot fakeroot chroot $CHROOT_DIR \
+    apt search libxml2 > /dev/null
+
+  fakechroot fakeroot chroot $CHROOT_DIR \
     apt-get install -y $PACKAGES 2>&1 | indent
 
   fakechroot fakeroot chroot $CHROOT_DIR \
@@ -246,9 +249,6 @@ cp "$BUILDPACK_DIR/bin/Rprofile.site" "$CHROOT_DIR/etc/R/Rprofile.site"
 
 # install application author dependencies from CRAN
 topic "Executing init.r script"
-
-export PKG_CONFIG_PATH="/usr/lib/x86_64-linux-gnu/pkgconfig"
-echo "PKG_CONFIG_PATH:$PKG_CONFIG_PATH"
 
 # get the init.r file to use
 # it can be init.[rR] or run.R
@@ -275,7 +275,7 @@ if [[ ! -z "$INIT_FILE" ]]; then
   # execute the init wrapper
   # working directory must be /app so that provided packages/scripts can be found
   fakechroot fakeroot chroot $CHROOT_DIR \
-    /bin/bash -c 'PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig /usr/bin/R --no-save --quiet --slave --file=/app/wrapper.R 2>&1' | indent
+    /usr/bin/R --no-save --quiet --slave --file=/app/wrapper.R 2>&1 | indent
 
   # determine whether the R script failed
   if [[ -f "$CHROOT_DIR/app/status" ]]; then
