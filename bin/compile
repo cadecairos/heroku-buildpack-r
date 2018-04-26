@@ -227,6 +227,9 @@ if [[ -f "$BUILD_DIR/Aptfile" ]]; then
   done < "$BUILD_DIR/Aptfile"
 
   fakechroot fakeroot chroot $CHROOT_DIR \
+    echo "deb http://us.archive.ubuntu.com/ubuntu/ xenial-updates main restricted" > /etc/apt/sources.list
+
+  fakechroot fakeroot chroot $CHROOT_DIR \
     apt-get update > /dev/null
 
   fakechroot fakeroot chroot $CHROOT_DIR \
