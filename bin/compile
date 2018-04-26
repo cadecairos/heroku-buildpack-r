@@ -273,7 +273,7 @@ if [[ ! -z "$INIT_FILE" ]]; then
     ls -la /
 
   fakechroot fakeroot chroot $CHROOT_DIR \
-    ls -la /usr/lib
+    ls -la /usr/lib/x86_64-linux-gnu
 
   # execute the init wrapper
   # working directory must be /app so that provided packages/scripts can be found
