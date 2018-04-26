@@ -221,11 +221,14 @@ if [[ -f "$BUILD_DIR/Aptfile" ]]; then
 
   # TODO: add support for deb files
 
+  echo "source list: `$BUILD_DIR/sources.list`"
   APT_OPTIONS="-o dir::etc::sourcelist=$BUILD_DIR/sources.list"
+  echo "APT_OPTIONS: $APT_OPTIONS"
   PACKAGES=""
   while IFS='' read -r PACKAGE || [[ -n "$PACKAGE" ]]; do
     PACKAGES="$PACKAGES $PACKAGE"
   done < "$BUILD_DIR/Aptfile"
+
 
   fakechroot fakeroot chroot $CHROOT_DIR \
     apt-get $APT_OPTIONS update > /dev/null
