@@ -221,23 +221,19 @@ if [[ -f "$BUILD_DIR/Aptfile" ]]; then
 
   # TODO: add support for deb files
 
-  echo "source list: `$BUILD_DIR/sources.list`"
-  APT_OPTIONS="-o dir::etc::sourcelist=$BUILD_DIR/sources.list"
-  echo "APT_OPTIONS: $APT_OPTIONS"
   PACKAGES=""
   while IFS='' read -r PACKAGE || [[ -n "$PACKAGE" ]]; do
     PACKAGES="$PACKAGES $PACKAGE"
   done < "$BUILD_DIR/Aptfile"
 
+  fakechroot fakeroot chroot $CHROOT_DIR \
+    apt-get update > /dev/null
 
   fakechroot fakeroot chroot $CHROOT_DIR \
-    apt-get $APT_OPTIONS update > /dev/null
+    apt-get install -y $PACKAGES 2>&1 | indent
 
   fakechroot fakeroot chroot $CHROOT_DIR \
-    apt-get $APT_OPTIONS install -y $PACKAGES 2>&1 | indent
-
-  fakechroot fakeroot chroot $CHROOT_DIR \
-    apt-get $APT_OPTIONS clean > /dev/null
+    apt-get clean > /dev/null
 
   # remove unneeded files
   fakechroot fakeroot chroot $CHROOT_DIR \
@@ -272,6 +268,12 @@ if [[ ! -z "$INIT_FILE" ]]; then
   #  would have preferred to use sed or awk for this, but it's real tricky with multi-line
   #  replacements, so using a Ruby program, as Ruby is installed on Heroku by default
   ruby "$BUILDPACK_DIR/bin/util.rb" "$WRAPPER" "$INIT_FILE" "$BUILD_DIR" "$CRAN_MIRROR"
+
+  fakechroot fakeroot chroot $CHROOT_DIR \
+    ls -la /
+
+  fakechroot fakeroot chroot $CHROOT_DIR \
+    ls -la /usr/lib
 
   # execute the init wrapper
   # working directory must be /app so that provided packages/scripts can be found
