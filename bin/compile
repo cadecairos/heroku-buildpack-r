@@ -206,7 +206,7 @@ sed -i "s#root:x:0:0:root:/root:/bin/bash#root:x:0:0:root:/app:/bin/bash#g" etc/
 #        /usr/lib/libR.so => ../lib/R/lib/libR.so
 #
 
-fakechroot fakeroot chroot $CHROOT_DIR \
+fakechroot -s fakeroot chroot $CHROOT_DIR \
   /bin/sh -c 'cd /usr/lib && ln -sf ../lib/R/lib/libR.so libR.so'
 
 #
@@ -226,17 +226,17 @@ if [[ -f "$BUILD_DIR/Aptfile" ]]; then
     PACKAGES="$PACKAGES $PACKAGE"
   done < "$BUILD_DIR/Aptfile"
 
-  fakechroot fakeroot chroot $CHROOT_DIR \
+  fakechroot -s fakeroot chroot $CHROOT_DIR \
     apt-get update > /dev/null
 
-  fakechroot fakeroot chroot $CHROOT_DIR \
+  fakechroot -s fakeroot chroot $CHROOT_DIR \
     apt-get install -y $PACKAGES 2>&1 | indent
 
-  fakechroot fakeroot chroot $CHROOT_DIR \
+  fakechroot -s fakeroot chroot $CHROOT_DIR \
     apt-get clean > /dev/null
 
   # remove unneeded files
-  fakechroot fakeroot chroot $CHROOT_DIR \
+  fakechroot -s fakeroot chroot $CHROOT_DIR \
     rm -rf /var/lib/apt/lists/* > /dev/null
 
 fi
@@ -271,12 +271,12 @@ if [[ ! -z "$INIT_FILE" ]]; then
   echo "---------------"
   dpkg -L libxml2-dev
   echo "---------------"
-  fakechroot fakeroot chroot $CHROOT_DIR \
+  fakechroot -s fakeroot chroot $CHROOT_DIR \
     dpkg -L libxml2-dev
 
   # execute the init wrapper
   # working directory must be /app so that provided packages/scripts can be found
-  fakechroot fakeroot chroot $CHROOT_DIR \
+  fakechroot -s fakeroot chroot $CHROOT_DIR \
     /usr/bin/R --no-save --quiet --slave --file=/app/wrapper.R 2>&1 | indent
 
   # determine whether the R script failed
