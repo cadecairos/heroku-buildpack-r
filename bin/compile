@@ -268,7 +268,9 @@ if [[ ! -z "$INIT_FILE" ]]; then
   #  would have preferred to use sed or awk for this, but it's real tricky with multi-line
   #  replacements, so using a Ruby program, as Ruby is installed on Heroku by default
   ruby "$BUILDPACK_DIR/bin/util.rb" "$WRAPPER" "$INIT_FILE" "$BUILD_DIR" "$CRAN_MIRROR"
-
+  echo "---------------"
+  dpkg -L libxml2-dev
+  echo "---------------"
   fakechroot fakeroot chroot $CHROOT_DIR \
     dpkg -L libxml2-dev
 
